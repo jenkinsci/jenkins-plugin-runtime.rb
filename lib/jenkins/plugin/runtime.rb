@@ -1,3 +1,4 @@
+require 'jenkins/extension_point'
 require 'jenkins/plugin'
 require 'jenkins/plugin/specification'
 require 'jenkins/plugin/runtime/version'

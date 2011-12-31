@@ -38,6 +38,7 @@ module Jenkins
     def initialize(java)
       @java = @peer = java
       @start = @stop = proc {}
+      @post_init = [] # callback after the models are loaded
       @descriptors = {}
       @proxies = Proxies.new(self)
     end
@@ -90,6 +91,11 @@ module Jenkins
     def register_extension(class_or_instance, *args)
       extension = class_or_instance.is_a?(Class) ? class_or_instance.new : class_or_instance
       @peer.addExtension(export(extension))
+    end
+
+    # Registers a closure that gets executed after all the models are loaded
+    def post_init(&block)
+      @post_init << block
     end
 
     # Register a ruby class as a Jenkins extension point of
@@ -161,6 +167,12 @@ module Jenkins
       # TODO: can we access to Jenkins console logger?
       puts "Trying to load models from #{path}"
       load_file_in_dir(path)
+
+      while !@post_init.empty?
+        hooks = @post_init
+        @post_init = []
+        hooks.each {|b| b.call}
+      end
     end
 
     private

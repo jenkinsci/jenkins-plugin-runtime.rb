@@ -1,3 +1,4 @@
+require 'jenkins/extension_point'
 require 'jenkins/plugin'
 require 'jenkins/plugin/behavior'
 require 'jenkins/plugin/wrapper'
